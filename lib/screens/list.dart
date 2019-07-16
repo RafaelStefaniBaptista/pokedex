@@ -3,16 +3,42 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
+import 'form.dart';
+
 class ListPage extends StatelessWidget {
+  static const String routeName = "/";
+
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
       appBar: AppBar(
         title: Center(
-          child: Text('This will be a PokeDex'),
+          child: Text('Pokedex'),
+        ),
+        backgroundColor: Colors.red[800]
+      ),
+      backgroundColor: Colors.red,
+      body: Container(
+          child: Column(
+            // Center content in the column
+            mainAxisAlignment: MainAxisAlignment.center,
+            // add children to the column
+            children: <Widget>[
+              Expanded(
+                child: backToTheFuture()
+              ),
+              RaisedButton(
+                child: Text("Create Pokemon"),
+                // Execute when pressed
+                onPressed: () {
+                  Navigator.of(context).pushNamed(FormPage.routeName);
+                },
+                textColor: Colors.white,
+                color: Colors.blue,
+              )
+            ]
         ),
       ),
-      body: backToTheFuture()
     );
   }
 }

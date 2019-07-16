@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'list.dart';
+
 class FormPage extends StatelessWidget {
   static const String routeName = "/form";
 
@@ -11,7 +13,7 @@ class FormPage extends StatelessWidget {
       // AppBar
       appBar: AppBar(
         // Title
-        title: Text("Home Page"),
+        title: Text("Create your Pokemon"),
         // App Bar background color
         backgroundColor: Colors.red[800],
       ),
@@ -50,11 +52,10 @@ class FormPage extends StatelessWidget {
             ),
               // Icon Button
               RaisedButton(
-                child: Text("Create Pokeemon"),
+                child: Text("Create Pokemon"),
                 // Execute when pressed
                 onPressed: () {
-                  
-                  //Navigator.of(context).pushNamed(AboutPage.routeName);
+                  Navigator.pop(context);
                 },
                 textColor: Colors.white,
                 color: Colors.blue,
