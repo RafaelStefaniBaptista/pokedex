@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:handling_routes/screens/list.dart';
-import 'package:handling_routes/screens/form.dart';
+import 'package:pokedex/screens/list.dart';
+import 'package:pokedex/screens/form.dart';
 
 void main() {
   runApp(new MaterialApp(
