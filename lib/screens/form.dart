@@ -1,15 +1,30 @@
 import 'package:flutter/material.dart';
 
-import 'list.dart';
-
-class FormPage extends StatelessWidget {
+class FormPage extends StatefulWidget {
   static const String routeName = "/form";
 
-  final textEditingController = TextEditingController();
+  FormPage({Key key}) : super(key: key);
 
   @override
+  _FormPage createState() => _FormPage();
+}
+
+class _FormPage extends State<FormPage> {
+  final _scaffoldKey = new GlobalKey<ScaffoldState>();
+  final _textEditingController = TextEditingController();
+
+  void initState() {
+    super.initState();
+  }
+
+  void dispose() {
+    _textEditingController.dispose();
+    super.dispose();
+  }
+
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       // AppBar
       appBar: AppBar(
         // Title
@@ -34,28 +49,28 @@ class FormPage extends StatelessWidget {
                 // Set text alignment to center
                 textAlign: TextAlign.center,
               ),
-            TextFormField(
-              controller: textEditingController,
-              // The validator receives the text that the user has entered.
-              validator: (value) {
-                if (value.isEmpty) {
-                  return 'Enter some text';
-                }
-                return null;
-              },
-              decoration: InputDecoration(
-                hintText: 'Enter the pokemon name',
-                hintStyle: TextStyle(
-                    color: Colors.white
-                )
-              )
-            ),
+              TextFormField(
+                  controller: _textEditingController,
+                  textCapitalization: TextCapitalization.sentences,
+                  style: TextStyle(
+                      color: Colors.white
+                  ),
+                  decoration: InputDecoration(
+                      hintText: 'Enter the pokemon name',
+                      hintStyle: TextStyle(
+                          color: Colors.white
+                      )
+                  )
+              ),
               // Icon Button
               RaisedButton(
                 child: Text("Create Pokemon"),
                 // Execute when pressed
                 onPressed: () {
-                  Navigator.pop(context);
+                  _scaffoldKey.currentState.showSnackBar(new SnackBar(
+                    content: new Text(_textEditingController.text),
+                  ));
+                  //Navigator.pop(context);
                 },
                 textColor: Colors.white,
                 color: Colors.blue,

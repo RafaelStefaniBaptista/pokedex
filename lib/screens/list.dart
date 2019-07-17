@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:pokedex/utils/string.dart';
 
 import 'form.dart';
 
@@ -50,10 +51,10 @@ backToTheFuture() {
       switch (snapshot.connectionState) {
         case ConnectionState.none:
         case ConnectionState.waiting:
-          return new Text('loading...');
+          return new Text('Loading...');
         default:
           if (snapshot.hasError)
-            return new Text('Error: ${snapshot.error}');
+            return null;
           else
             return createListView(context, snapshot);
       }
@@ -165,7 +166,10 @@ Widget createListView(BuildContext context, AsyncSnapshot snapshot) {
       return new Column(
         children: <Widget>[
           new ListTile(
-            title: new Text(pokemonList[index].name),
+            title: new Text(
+              firstUpperCase(pokemonList[index].name),
+                style: TextStyle(color: Colors.white),
+            ),
           ),
           new Divider(height: 2.0,),
         ],
@@ -173,3 +177,4 @@ Widget createListView(BuildContext context, AsyncSnapshot snapshot) {
     },
   );
 }
+
