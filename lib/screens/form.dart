@@ -30,7 +30,7 @@ class _FormPage extends State<FormPage> {
         // Title
         title: Text("Create your Pokemon"),
         // App Bar background color
-        backgroundColor: Colors.red[800],
+        backgroundColor: Colors.red[700],
       ),
       // Body
       body: Container(

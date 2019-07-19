@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:pokedex/utils/string.dart';
 
+import 'camera.dart';
 import 'form.dart';
 
 class ListPage extends StatelessWidget {
@@ -13,10 +14,26 @@ class ListPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return new Scaffold(
       appBar: AppBar(
-        title: Center(
-          child: Text('Pokedex'),
+        backgroundColor: Colors.red[700],
+        centerTitle: true,
+        leading: new FlatButton(
+          onPressed: () => {cameraClick(context)},
+          padding: EdgeInsets.all(0.0),
+          child: Icon(
+            Icons.camera_alt,
+            color: Colors.white,
+          ),
         ),
-        backgroundColor: Colors.red[800]
+        title: SizedBox(
+          height: 35.0,
+          child: Image.asset("assets/images/logo.png")
+        ),
+        actions: <Widget>[
+          Padding(
+            padding: const EdgeInsets.only(right: 12.0),
+            child: Icon(Icons.mic),
+          )
+        ],
       ),
       backgroundColor: Colors.red,
       body: Container(
@@ -42,6 +59,10 @@ class ListPage extends StatelessWidget {
       ),
     );
   }
+
+  cameraClick(BuildContext context) {
+    Navigator.of(context).pushNamed(TakePictureScreen.routeName);
+  }
 }
 
 backToTheFuture() {
@@ -54,7 +75,7 @@ backToTheFuture() {
           return new Text('Loading...');
         default:
           if (snapshot.hasError)
-            return null;
+            return new Container();
           else
             return createListView(context, snapshot);
       }

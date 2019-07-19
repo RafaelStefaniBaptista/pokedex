@@ -5,6 +5,9 @@ dependencies:
   http: ^0.12.0+2
   flutter:
     sdk: flutter
+  camera:
+  path_provider:
+  path:
 
 dev_dependencies:
   flutter_test:
@@ -38,8 +41,9 @@ flutter:
   #
   # Here is an example:
   #
-  # assets:
-  #  - packages/PACKAGE_NAME/path/to/asset
+  assets:
+    - assets/images/logo.png
+    - assets/images/pokeball_icon.svg
 
   # To add custom fonts to your application, add a fonts section here,
   # in this "flutter" section. Each entry in this list should have a
