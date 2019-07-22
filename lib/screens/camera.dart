@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:path/path.dart' show join;
 import 'package:path_provider/path_provider.dart';
 
@@ -132,8 +133,12 @@ class DisplayPictureScreen extends StatelessWidget {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.transparent,
-        child: Image.asset('assets/images/pokeball_icon.svg'),
+        backgroundColor: Colors.blue,
+        child: SvgPicture.asset(
+          'assets/images/pokeball_icon.svg',
+          height: 35,
+          width: 35,
+        ),
         // Provide an onPressed callback.
         onPressed: () async {
           // Take the Picture in a try / catch block. If anything goes wrong,

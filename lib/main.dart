@@ -19,5 +19,6 @@ Future<void> main() async {
       TakePictureScreen.routeName: (BuildContext context) => new TakePictureScreen(camera: firstCamera),
       FormPage.routeName: (BuildContext context) => new FormPage(),
     },
+    debugShowCheckedModeBanner: false,
   ));
 }

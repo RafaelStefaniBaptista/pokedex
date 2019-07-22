@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:pokedex/models/pokemon.dart';
 import 'package:pokedex/utils/string.dart';
 
 import 'camera.dart';
@@ -42,8 +43,8 @@ class ListPage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             // add children to the column
             children: <Widget>[
-              Expanded(
-                child: backToTheFuture()
+               Expanded(
+                   child: backToTheFuture()
               ),
               RaisedButton(
                 child: Text("Create Pokemon"),
@@ -75,7 +76,7 @@ backToTheFuture() {
           return new Text('Loading...');
         default:
           if (snapshot.hasError)
-            return new Container();
+            return new Text(snapshot.error.toString());
           else
             return createListView(context, snapshot);
       }
@@ -83,119 +84,218 @@ backToTheFuture() {
   );
 }
 
-
-class PokemonCard extends StatelessWidget {
-  final String name;
-  final String img;
-
-  PokemonCard(this.name, this.img);
-
-  @override
-  Widget build(BuildContext context) {
-    return new Container(
-      height: 140,
-      width: 50,
-      decoration: new BoxDecoration(
-        color: Colors.white,
-        boxShadow: [
-          new BoxShadow(
-              offset: new Offset(0, 0), spreadRadius: 0.2, blurRadius: 0.2),
-        ],
-      ),
-      child: new PokemonCardData(name, img),
-    );
-  }
+List<Pokemon> getPokemonListFromJson(Map<String, dynamic> json) {
+  return (json['results'] as List)
+      .map((pokemonJson) => new Pokemon(name: firstUpperCase(pokemonJson['name']), url: pokemonJson['url']))
+      .toList();
 }
 
-class PokemonCardData extends StatelessWidget {
-  final String name;
-  final String img;
-
-  PokemonCardData(this.name, this.img);
-
-  @override
-  Widget build(BuildContext context) {
-    return new Column(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: <Widget>[
-        Text(name),
-        Image.network(
-          img,
-          height: 100,
-        ),
-      ],
-    );
-  }
-}
-
-class PokemonCardRow extends StatelessWidget {
-  final List pokemon;
-
-  PokemonCardRow(this.pokemon);
-
-  @override
-  Widget build(BuildContext context) {
-    return new Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: <Widget>[
-        new PokemonCard(pokemon[0],
-            'https://static.pokemonpets.com/images/monsters-images-300-300/5-Charmeleon.png'),
-        PokemonCard(pokemon[0],
-            'https://static.pokemonpets.com/images/monsters-images-300-300/5-Charmeleon.png'),
-      ],
-    );
-  }
-}
-
-class Pokemon {
-  final String name;
-  final String url;
-
-  Pokemon(this.name, this.url);
-}
-
-class PokemonList {
-  final List<Pokemon> pokemonList;
-
-  PokemonList({this.pokemonList});
-
-  factory PokemonList.fromJson(Map<String, dynamic> json) {
-    return PokemonList(
-      pokemonList: (json['results'] as List)
-          .map((pokemon) => new Pokemon(pokemon['name'], pokemon['url']))
-          .toList(),
-    );
-  }
-}
-
-Future<PokemonList> getPokemonListData() async {
+Future<List<Pokemon>> getPokemonListData() async {
   final response = await http.get('https://pokeapi.co/api/v2/pokemon/');
 
   if (response.statusCode == 200) {
-    return PokemonList.fromJson(json.decode(response.body));
+    return getPokemonListFromJson(json.decode(response.body));
   } else {
     throw Exception('Failed to load pokemons from the API');
   }
 }
 
 Widget createListView(BuildContext context, AsyncSnapshot snapshot) {
-  List<Pokemon> pokemonList = snapshot.data.pokemonList;
+  List<Pokemon> pokemonList = snapshot.data;
 
-  return new ListView.builder(
-    itemCount: pokemonList.length,
-    itemBuilder: (BuildContext context, int index) {
-      return new Column(
-        children: <Widget>[
-          new ListTile(
-            title: new Text(
-              firstUpperCase(pokemonList[index].name),
-                style: TextStyle(color: Colors.white),
-            ),
-          ),
-          new Divider(height: 2.0,),
-        ],
-      );
-    },
+  return GridView.count(
+    crossAxisCount: 2,
+    children: pokemonList
+        .map((poke) =>
+        Padding(
+            padding: const EdgeInsets.all(2.0),
+            child: InkWell(
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => PokeDetail(
+                          pokemon: poke,
+                        )
+                    )
+                );
+              },
+              child: Hero(
+                tag: poke.name,
+                child: Card(
+                  elevation: 0,
+                  color: Colors.transparent,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment:
+                    MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      Column(children: <Widget>[
+                        Padding(
+                            padding: const EdgeInsets.only(left: 10, top: 15),
+                            child:
+                            Transform.scale(
+                                scale: 4.2,
+                                child:
+                                Container(
+                                  height: 120,
+                                  width: 80,
+                                  decoration: BoxDecoration(
+                                      image: DecorationImage(
+                                          image: NetworkImage(
+                                              "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png"
+                                          )
+                                      )
+                                  ),
+                                )
+                            )
+                        ),
+                        Padding(
+                            padding: const EdgeInsets.all(5.0),
+                            child: Text(
+                              poke.name,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 20.0,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            )
+                        )
+                      ],),
+                    ],
+                  ),
+                ),
+              ),
+            )
+        )
+    )
+        .toList(),
   );
+
+
+
+//  return new ListView.builder(
+//    itemCount: pokemonList.length,
+//    itemBuilder: (BuildContext context, int index) {
+//      return new Column(
+//        children: <Widget>[
+//          new ListTile(
+//            title: new Text(
+//              firstUpperCase(pokemonList[index].name),
+//                style: TextStyle(color: Colors.white),
+//            ),
+//          ),
+//          new Divider(height: 2.0,),
+//        ],
+//      );
+//    },
+//  );
 }
 
+class PokeDetail extends StatelessWidget {
+  final Pokemon pokemon;
+
+  PokeDetail({this.pokemon});
+
+  bodyWidget(BuildContext context) => Stack(
+    children: <Widget>[
+      Positioned(
+        height: MediaQuery.of(context).size.height / 1.5,
+        width: MediaQuery.of(context).size.width - 20,
+        left: 10.0,
+        top: MediaQuery.of(context).size.height * 0.075,
+        child: Card(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15.0),
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              SizedBox(
+                height: 70.0,
+              ),
+              Text(
+                pokemon.name,
+                style:
+                TextStyle(fontSize: 25.0, fontWeight: FontWeight.bold),
+              ),
+              Text("Height: 96"),
+              Text("Weight: 96"),
+              Text(
+                "Types",
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: ["gaymer"]
+                    .map((t) => FilterChip(
+                    backgroundColor: Colors.amber[600],
+                    label: Text(
+                      t,
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    onSelected: (b) {}))
+                    .toList(),
+              ),
+              Text("Weakness",
+                  style: TextStyle(fontWeight: FontWeight.bold)),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: ["tureba"]
+                    .map((t) => FilterChip(
+                    backgroundColor: Colors.cyan,
+                    label: Text(
+                      t,
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    onSelected: (b) {}))
+                    .toList(),
+              ),
+              Text("Next Evolution",
+                  style: TextStyle(fontWeight: FontWeight.bold)),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: ["sua mãe"]
+                    .map((n) => FilterChip(
+                    backgroundColor: Colors.green,
+                    label: Text(n,
+                        style: TextStyle(color: Colors.white)),
+                    onSelected: (b) {}))
+                    .toList(),
+              ),
+            ],
+          ),
+        ),
+      ),
+      Align(
+        alignment: Alignment.topCenter,
+        child: Hero(
+            tag: "assets/images/loader.gif",
+            child: Container(
+              height: 200.0,
+              width: 200.0,
+              decoration: BoxDecoration(
+                  image: DecorationImage(
+                      fit: BoxFit.cover,
+                      image: NetworkImage("https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png")
+//                      image: AssetImage("assets/images/loader.gif")
+                  )
+              ),
+            )),
+      )
+    ],
+  );
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.red,
+      appBar: AppBar(
+        elevation: 0.0,
+        backgroundColor: Colors.red,
+        title: Text(pokemon.name),
+      ),
+      body: bodyWidget(context),
+    );
+  }
+}
