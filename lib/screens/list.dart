@@ -227,7 +227,7 @@ class PokeDetail extends StatelessWidget {
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: ["gaymer"]
+                children: ["gamer"]
                     .map((t) => FilterChip(
                     backgroundColor: Colors.amber[600],
                     label: Text(
@@ -241,7 +241,7 @@ class PokeDetail extends StatelessWidget {
                   style: TextStyle(fontWeight: FontWeight.bold)),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: ["tureba"]
+                children: ["Sun light"]
                     .map((t) => FilterChip(
                     backgroundColor: Colors.cyan,
                     label: Text(
@@ -255,7 +255,7 @@ class PokeDetail extends StatelessWidget {
                   style: TextStyle(fontWeight: FontWeight.bold)),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: ["sua mãe"]
+                children: ["Dev"]
                     .map((n) => FilterChip(
                     backgroundColor: Colors.green,
                     label: Text(n,
